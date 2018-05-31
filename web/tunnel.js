@@ -198,10 +198,16 @@ function init_local()
                         }
 		    		},
 		    		'click .explorer': function(e,value,row,index){
-		    			console.log(arguments);
-		    			var path = row.user || '';
-						var args = [`http://127.0.0.1:${row.from}/${path}`];
-						spawn('explorer', args, {detached: true});
+						console.log(arguments);
+						if(process.platform=='linux'){
+							var path = row.user || '';
+							var args = [`http://127.0.0.1:${row.from}/${path}`];
+							spawn('gnome-www-browser', args, {detached: true});
+						}else{	
+							var path = row.user || '';
+							var args = [`http://127.0.0.1:${row.from}/${path}`];
+							spawn('explorer', args, {detached: true});
+						}
 		    		},
 		    		'click .del': function(e,value,row,index){
 		    			console.log(arguments);
