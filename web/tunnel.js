@@ -210,7 +210,11 @@ function init_local()
 		    			console.log(arguments);
 		    			var path = row.user || '';
 						var args = [`http://127.0.0.1:${row.from}/${path}`];
-						spawn('explorer', args, {detached: true});
+						if(process.platform=='linux'){
+							spawn('gnome-www-browser', args, {detached: true});
+						}else{
+							spawn('explorer', args, {detached: true});
+						}
 		    		},
 		    		'click .del': function(e,value,row,index){
 		    			console.log(arguments);
