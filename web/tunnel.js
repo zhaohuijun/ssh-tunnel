@@ -24,6 +24,7 @@ $(function () {
     $("#inputIP")[0].value = conf.ip;
     $("#inputPORT")[0].value = conf.port;
     $("#inputUSER")[0].value = conf.user;
+    $("#inputKEY")[0].value = conf.key;
     
     pos = $("#container").position();
     var height = window.innerHeight - pos.top - 10;
@@ -73,6 +74,7 @@ function save()
 	conf.user = $("#inputUSER")[0].value;
 	conf.ip = $("#inputIP")[0].value;
 	conf.port = $("#inputPORT")[0].value;
+	conf.key = $("#inputKEY")[0].value;
 	try{
 		fs.writeFileSync(confFile, JSON.stringify(conf), 'utf8');
 	}catch(e){
@@ -119,6 +121,9 @@ function start(){
 		args.push(`-R ${r.from}:${r.to}`);
 	}
 	args = args.concat(['-p '+conf.port, conf.user+'@'+conf.ip]);
+	if(conf.key && conf.key.length>0){
+		args.push(`-i ${conf.key}`)
+	}
 	log(args);
 	sshProcess = spawn('ssh', args);
 	sshProcess.stdout.on('data', function(data){
@@ -189,7 +194,11 @@ function init_local()
 //		    			console.log(arguments);
 						if(!row.user) row.user = 'root';
                         if (process.platform=='linux'){
-                            var sshcmd = `ssh -o StrictHostKeyChecking=no -p ${row.from} -l ${row.user} 127.0.0.1`
+                            var sshcmd = `ssh -o StrictHostKeyChecking=no -p ${row.from} -l ${row.user} 127.0.0.1 `
+														if(conf.key && conf.key.length>0){
+															sshcmd += ` -i ${conf.key} `
+														}
+														log(sshcmd)
                             var args = [`-e "${sshcmd}"`]
                             spawn('gnome-terminal', args, {shell: true, detached: true});
                         }else{
@@ -198,16 +207,10 @@ function init_local()
                         }
 		    		},
 		    		'click .explorer': function(e,value,row,index){
-						console.log(arguments);
-						if(process.platform=='linux'){
-							var path = row.user || '';
-							var args = [`http://127.0.0.1:${row.from}/${path}`];
-							spawn('gnome-www-browser', args, {detached: true});
-						}else{	
-							var path = row.user || '';
-							var args = [`http://127.0.0.1:${row.from}/${path}`];
-							spawn('explorer', args, {detached: true});
-						}
+		    			console.log(arguments);
+		    			var path = row.user || '';
+						var args = [`http://127.0.0.1:${row.from}/${path}`];
+						spawn('explorer', args, {detached: true});
 		    		},
 		    		'click .del': function(e,value,row,index){
 		    			console.log(arguments);

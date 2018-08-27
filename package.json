@@ -4,11 +4,11 @@
   "description": "manage ssh tunnel",
   "main": "index.html",
   "window": {
-  	"width": 800,
+  	"width": 960,
   	"height": 500
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nw ."
   },
   "keywords": [
     "password"
