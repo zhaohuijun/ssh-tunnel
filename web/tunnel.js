@@ -105,7 +105,7 @@ function log(str, newl=true)
 }
 
 function start(){
-	console.log('start');
+	log('start');
 	if(sshProcess) return;
 	
     $(".nav.navbar-nav li a[action='start']").hide();
@@ -126,6 +126,8 @@ function start(){
 	}
 	log(args);
 	sshProcess = spawn('ssh', args);
+	// sshProcess = sqawn('env', [])
+	log(sshProcess)
 	sshProcess.stdout.on('data', function(data){
 		log(data);
 		// var rows = data.toString().split('\n');
@@ -195,14 +197,18 @@ function init_local()
 						if(!row.user) row.user = 'root';
                         if (process.platform=='linux'){
                             var sshcmd = `ssh -o StrictHostKeyChecking=no -p ${row.from} -l ${row.user} 127.0.0.1 `
-														if(conf.key && conf.key.length>0){
-															sshcmd += ` -i ${conf.key} `
-														}
-														log(sshcmd)
+							if(conf.key && conf.key.length>0){
+								sshcmd += ` -i ${conf.key} `
+							}
+							log(sshcmd)
                             var args = [`-e "${sshcmd}"`]
                             spawn('gnome-terminal', args, {shell: true, detached: true});
                         }else{
-    						var args = ['-o StrictHostKeyChecking=no', `-p ${row.from}`, `-l ${row.user}`, '127.0.0.1'];
+							var args = ['-o StrictHostKeyChecking=no', `-p ${row.from}`, `-l ${row.user}`, '127.0.0.1'];
+							if(conf.key && conf.key.length>0){
+								args.push(` -i ${conf.key} `)
+							}
+							log(args)
     						spawn('ssh', args, {shell: true, detached: true});
                         }
 		    		},

@@ -5,7 +5,7 @@
   "main": "index.html",
   "window": {
   	"width": 960,
-  	"height": 500
+  	"height": 700
   },
   "scripts": {
     "start": "nw ."
