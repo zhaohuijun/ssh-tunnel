@@ -107,6 +107,11 @@ function log(str, newl=true)
 function start(){
 	log('start');
 	if(sshProcess) return;
+
+	// log(fs.readdirSync('/'))
+	// log(fs.readdirSync('/mnt/ext4/work/wq/backend/n/'))
+	// log(fs.readFileSync('/mnt/ext4/work/wq/backend/n/biffet.pem'))
+	// return
 	
     $(".nav.navbar-nav li a[action='start']").hide();
     $(".nav.navbar-nav li a[action='stop']").show();
@@ -125,7 +130,15 @@ function start(){
 		args.push(`-i ${conf.key}`)
 	}
 	log(args);
-	sshProcess = spawn('ssh', args);
+	if (process.platform=='linux'){
+		var sshcmd = `ssh ` + args.join(' ')
+		// log(sshcmd)
+		var args = [`-e "${sshcmd}"`]
+		spawn('gnome-terminal', args, {shell: false, detached: false});
+	}else
+	{
+		sshProcess = spawn('ssh', args);
+	}
 	// sshProcess = sqawn('env', [])
 	log(sshProcess)
 	sshProcess.stdout.on('data', function(data){
